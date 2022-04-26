@@ -281,13 +281,14 @@ app.delete('/', async(req, res)=>{
         }
       })
     }
-    console.log( blnEstado)
+    const modificarEstadoUsuario = await UsuarioModel.findOneAndUpdate({_id: _idUsuario},{$set: { blnEstado: blnEstado}},{new: true})
+
+    
     return res.status(200).json({
       ok:true,
       msg:'Se recibieron los valores de manera exitosa',
       cont:{
-        _idUsuario: _idUsuario,
-        blnEstado: blnEstado
+       modificarEstadoUsuario
       }
     })
     
