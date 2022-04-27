@@ -135,7 +135,15 @@ const ProductoModel = require('../../models/producto/producto.model');
 // })
 
 app.get('/', async (req, res) => {
-    const obtenerProductos = await ProductoModel.find();
+    const blnEstado = req.query.blnEstado == "false" ? false : true;
+    const obtenerProductos = await ProductoModel.find({blnEstado:blnEstado});
+    //funcion con aggregate
+    const obtenerProductosConAggregate = await ProductoModel.aggregate([
+       // {$project:{strNombre: 1 ,strPrecio: 1}},
+        { $match:{$expr:{ $eq:["blnEstado", blnEstado]}}},
+    ]);
+
+    // fin funcion aggregate
    if(obtenerProductos.length ==0){
      
     return res.status(200).json({
@@ -143,13 +151,15 @@ app.get('/', async (req, res) => {
         msg: 'Accedi a la ruta del producto',
         cont: {
             obtenerProductos
+          
         }
     })
    } return res.status(200).json({
        ok:true,
        msg:'Se obtuvieron los productos de manera exitosa',
        cont:{
-           obtenerProductos
+           obtenerProductos,
+           obtenerProductosConAggregate
        }
    })
     
@@ -300,7 +310,9 @@ try {
     })
 }
 })
-  
+
+// La agregacion en MongoDB sigue una estructura tipo "pipeline:
+//diferentes etapas, donde cada una toma la salida de la anterior"
 
 
 module.exports =  app;

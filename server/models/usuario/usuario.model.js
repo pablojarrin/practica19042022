@@ -25,6 +25,10 @@ let SchemaUsuario = mongoose.Schema({
     strNombreUsuario:{
         type:String,
         required:[true, ' No se recibio la contrasena favor ingrrsar']
+    },
+    blnEstado:{
+        type: Boolean,
+        default:true
     }
     
 })

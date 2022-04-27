@@ -71,6 +71,7 @@ const usuarioModel = require('../../models/usuario/usuario.model');
 
 
 app.get('/', async (req, res) => {
+  const blnEstado = req.query.blnEstado == "false" ? false : true
     const obtenerUsuarios = await UsuarioModel.find({},{strNombre:1,strContrasena:0 });
     if(obtenerUsuarios.length < 1){
  // if(Object.keys(obtenerUsuarios).length != 0) { 
@@ -94,48 +95,48 @@ app.get('/', async (req, res) => {
 
 
 
-//  app.put('/',(req,res) => {
-//         const _idUsuario = parseInt(req.query._idUsuario);
+ app.put('/',(req,res) => {
+        const _idUsuario = parseInt(req.query._idUsuario);
     
-//          console.log(typeof _idUsuario)
-//         if(_idUsuario){
-//             const encontroUsuario = arrJsnUsuarios.find(usuario => usuario._id === _idUsuario);
-//             if(encontroUsuario){
-//                 const actuaizaUsuario = {_id: _idUsuario, strNombre: req.body.strNombre, strApellido: req.body.strApellido, strEmail: req.body.strEmail};
-//                 const filtraUsuario = arrJsnUsuarios.filter(usuario => usuario._id != _idUsuario)
-//                 arrJsnUsuarios = filtraUsuario;
-//                 arrJsnUsuarios.push(actuaizaUsuario);
+         console.log(typeof _idUsuario)
+        if(_idUsuario){
+            const encontroUsuario = arrJsnUsuarios.find(usuario => usuario._id === _idUsuario);
+            if(encontroUsuario){
+                const actuaizaUsuario = {_id: _idUsuario, strNombre: req.body.strNombre, strApellido: req.body.strApellido, strEmail: req.body.strEmail};
+                const filtraUsuario = arrJsnUsuarios.filter(usuario => usuario._id != _idUsuario)
+                arrJsnUsuarios = filtraUsuario;
+                arrJsnUsuarios.push(actuaizaUsuario);
     
-//                 return res.status(200).json({
-//                     ok: true,
-//                     msg: 'El usuario se actualizo de manera exitosa',
-//                     cont:{
-//                        actuaizaUsuario
-//                     }
-//                 })
+                return res.status(200).json({
+                    ok: true,
+                    msg: 'El usuario se actualizo de manera exitosa',
+                    cont:{
+                       actuaizaUsuario
+                    }
+                })
     
-//             }else{
+            }else{
     
-//                 return res.status(400).json({
-//                     ok: false,
-//                     msg: `El usuario con el _id: ${_idUsuario} , no se ecuentra rgistrado en la BD`,
-//                     cont:{
-//                         _idUsuario
-//                     }
-//                 })
-//             }
+                return res.status(400).json({
+                    ok: false,
+                    msg: `El usuario con el _id: ${_idUsuario} , no se ecuentra rgistrado en la BD`,
+                    cont:{
+                        _idUsuario
+                    }
+                })
+            }
     
-//         }else{
-//             return res.status(400).json({
-//                 ok: false,
-//                 msg: 'El identificador del usuario no existe',
-//                 cont:{
-//                     _idUsuario
-//                 }
-//             })
-//         }
+        }else{
+            return res.status(400).json({
+                ok: false,
+                msg: 'El identificador del usuario no existe',
+                cont:{
+                    _idUsuario
+                }
+            })
+        }
     
-//   })
+  })
 
 
 app.put('/', async(req,res) => {
@@ -194,84 +195,83 @@ app.put('/', async(req,res) => {
   }
 })
 
-// app.delete('/',(req,res)=> {
-//   const _idUsuario =req.query._idUsuario;
-//   if(!_idUsuario){
-//     return res.status(400).json({
-//       ok: false,
-//       msg: 'No se recibio un identificadore de usuario',
-//       cont: {
-//         _idUsuario
-//       }
-//     })
-//   }
-//   const encontroUsuario = arrJsnUsuarios.find(usuario => usuario._id == _idUsuario)
-//   if(encontroUsuario){
-//     return res.status(400).json({
-//       ok:false,
-//       msg:`No se encontro un usuario con el _id: ${_idUsuario} en la base de datos`,
-//       cont: {
-//         _idUsuario
-//       }
-//     })
-//   }
-//   const usuariofiltrado = arrJsnUsuarios.filter(usuario => usuario._id != _idUsuario);
-//   arrJsnUsuarios = usuariofiltrado;
+app.delete('/',(req,res)=> {
+  const _idUsuario =req.query._idUsuario;
+  if(!_idUsuario){
+    return res.status(400).json({
+      ok: false,
+      msg: 'No se recibio un identificadore de usuario',
+      cont: {
+        _idUsuario
+      }
+    })
+  }
+  const encontroUsuario = arrJsnUsuarios.find(usuario => usuario._id == _idUsuario)
+  if(encontroUsuario){
+    return res.status(400).json({
+      ok:false,
+      msg:`No se encontro un usuario con el _id: ${_idUsuario} en la base de datos`,
+      cont: {
+        _idUsuario
+      }
+    })
+  }
+  const usuariofiltrado = arrJsnUsuarios.filter(usuario => usuario._id != _idUsuario);
+  arrJsnUsuarios = usuariofiltrado;
 
-//   return res.status(200).json({
-//     ok:true,
-//     msg:'El usaurio se elimino de forma exitosa',
-//     cont: {
-//       encontroUsuario
-//     }
-//   })
-// })
+  return res.status(200).json({
+    ok:true,
+    msg:'El usaurio se elimino de forma exitosa',
+    cont: {
+      encontroUsuario
+    }
+  })
+})
 
-// app.post('/',(req, res) =>{
-//     const body = {
-//     strNombre: req.body.strNombre,
-//     strApellido: req.body.strApellido,
-//     strEmail: req.body.strEmail,
-//     _id: parseInt( req.body._id)
-//   }
-//   if(body.strNombre && body.strApellido && body.strEmail && body._id){
+app.post('/',(req, res) =>{
+    const body = {
+    strNombre: req.body.strNombre,
+    strApellido: req.body.strApellido,
+    strEmail: req.body.strEmail,
+    _id: parseInt( req.body._id)
+  }
+  if(body.strNombre && body.strApellido && body.strEmail && body._id){
 
-//     const encontroUsuario = arrJsnUsuarios.find(usuario => usuario._id == body._id || usuario.strEmail == body.strEmail)
-//     console.log(encontroUsuario,'valor');
+    const encontroUsuario = arrJsnUsuarios.find(usuario => usuario._id == body._id || usuario.strEmail == body.strEmail)
+    console.log(encontroUsuario,'valor');
 
-//     if(encontroUsuario){
-//       res.status(400).json({
-//         ok: false,
-//         msg:'El usuario ya se encuentra registrado',
-//         cont:{
-//           encontroUsuario
-//         }   
-//     })
-// }else{
-//     arrJsnUsuarios.push(body)
-//     res.status(200).json({
-//     ok: true,
-//     msg:'Se registro el usuario  de manera correcta',
-//     cont:{
-//       arrJsnUsuarios
-//     }
-//   })
-//   }
-// }else{
-//   return res.status(400),json({
-//     ok: false,
-//     msg: 'No se recibio algun o todoslos valres requeridos',
-//     cont:{
-//       body
-//     }
-//   })
-// }
-// })
+    if(encontroUsuario){
+      res.status(400).json({
+        ok: false,
+        msg:'El usuario ya se encuentra registrado',
+        cont:{
+          encontroUsuario
+        }   
+    })
+}else{
+    arrJsnUsuarios.push(body)
+    res.status(200).json({
+    ok: true,
+    msg:'Se registro el usuario  de manera correcta',
+    cont:{
+      arrJsnUsuarios
+    }
+  })
+  }
+}else{
+  return res.status(400),json({
+    ok: false,
+    msg: 'No se recibio algun o todoslos valres requeridos',
+    cont:{
+      body
+    }
+  })
+}
+})
 
 app.delete('/', async(req, res)=>{
   const _idUsuario = req.query._idUsuario
   const blnEstado = req.query.blnEstado == "false" ? false : true
-
     if(!_idUsuario || _idUsuario.length !=24 ){
       return res.status(400).json({
         ok:false,
@@ -281,16 +281,14 @@ app.delete('/', async(req, res)=>{
         }
       })
     }
-    console.log( blnEstado)
+    const modificarEstadoUsuario = await UsuarioModel.findOneAndUpdate({_id: _idUsuario},{$set: { blnEstado: blnEstado}},{new: true})
     return res.status(200).json({
       ok:true,
       msg:'Se recibieron los valores de manera exitosa',
       cont:{
-        _idUsuario: _idUsuario,
-        blnEstado: blnEstado
+       modificarEstadoUsuario
       }
-    })
-    
+    })  
 })
 
 app.post('/', async (req, res) =>{
