@@ -29,6 +29,10 @@ let SchemaUsuario = mongoose.Schema({
     blnEstado:{
         type: Boolean,
         default:true
+    },
+    strImagen: {
+        type: String,
+        default: 'default.jpg'
     }
     
 })

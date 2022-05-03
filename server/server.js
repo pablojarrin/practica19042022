@@ -3,7 +3,8 @@ require('colors');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-
+const fileUpload = require('express-fileupload');
+app.use(fileUpload());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', require('./routes/index'));
 

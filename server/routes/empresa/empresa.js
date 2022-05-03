@@ -2,10 +2,11 @@ const { json, query } = require('express');
 const express = require('express');
 const app = express.Router();
 const EmpresaModel = require('../../models/empresa/empresa.model');
+const {verificarAcceso} = require('../../middlewares/permisos')
 
 
 
-app.get('/', async (req, res) => {
+app.get('/', verificarAcceso, async (req, res) => {
     try {
         const blnEstado = req.query.blnEstado == "false" ? false : true;
         const obtenerEmpresa = await EmpresaModel.find({blnEstado:blnEstado});
@@ -49,7 +50,7 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.post('/', async (req, res) => {
+app.post('/', verificarAcceso,async (req, res) => {
     try {
         const body = req.body;
         const empresaBody = new EmpresaModel(body)
@@ -95,7 +96,7 @@ app.post('/', async (req, res) => {
    // const productoRegistrado = await productoBody.save();  
 })
 
-app.put('/', async (req, res) => {
+app.put('/',verificarAcceso, async (req, res) => {
     try {
         const _idEmpresa = req.query._idEmpresa;
         if(!_idEmpresa || _idEmpresa.length !=24){
@@ -162,7 +163,7 @@ app.put('/', async (req, res) => {
 
 })
 
-app.delete('/', async (req, res)=>{
+app.delete('/',verificarAcceso, async (req, res)=>{
 try {
     const _idEmpresa = req.query._idEmpresa;
     if(!_idEmpresa || _idEmpresa.length != 24){

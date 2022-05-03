@@ -4,7 +4,10 @@ const app = express.Router();
 const arrJsnUsuarios = [{_id: 1, strNombre:"", strApellido:"", strEmail:""}]
 const UsuarioModel = require('../../models/usuario/usuario.model');
 const bcrypt = require('bcrypt');
+const {verificarAcceso} = require('../../middlewares/permisos');
 const usuarioModel = require('../../models/usuario/usuario.model');
+const cargaArchivo = require('../../library/cargarArchivos');
+
 
 
 // const path = require('path');
@@ -70,7 +73,7 @@ const usuarioModel = require('../../models/usuario/usuario.model');
 
 
 
-app.get('/', async (req, res) => {
+app.get('/', verificarAcceso, async (req, res) => {
   const blnEstado = req.query.blnEstado == "false" ? false : true;
     //const obtenerUsuarios = await UsuarioModel.find({},{strNombre:1,strContrasena:0 });
     const obtenerUsuarios = await UsuarioModel.find({ blnEstado: blnEstado }, {});    
@@ -138,7 +141,7 @@ app.get('/', async (req, res) => {
 //   })
 
 
-app.put('/', async(req,res) => {
+app.put('/', verificaAcceso, async(req,res) => {
   try {
     const _idUsuario = req.query._idUsuario;
     //validamos que no enviemos in id, o que el id no tenga la longitud correcta
@@ -291,7 +294,7 @@ app.put('/', async(req,res) => {
 // }
 // })
 
-app.delete('/', async(req, res)=>{
+app.delete('/', verificaAcceso, async(req, res)=>{
   try {
   const _idUsuario = req.query._idUsuario
   const blnEstado = req.query.blnEstado == "false" ? false : true
@@ -305,6 +308,7 @@ app.delete('/', async(req, res)=>{
       })
     }
     const modificarEstadoUsuario = await UsuarioModel.findOneAndUpdate({_id: _idUsuario},{$set: { blnEstado: blnEstado}},{new: true})
+  
     return res.status(200).json({
       ok:true,
       msg: blnEstado == true ? 'Se activo el usuario de manera exitosa' : 'Se desactivo el usuario de manera exitosa',
@@ -326,12 +330,18 @@ app.delete('/', async(req, res)=>{
 })
 
 
-app.post('/', async (req, res) =>{
-     // existe ? (lo que pasa si existe) : (no existe);
+app.post('/', verificaAcceso, async (req, res) =>{
+   try {
+       // existe ? (lo que pasa si existe) : (no existe);
+    
      const body = { ...req.body, strContrasena: req.body.strContrasena ? bcrypt.hashSync(req.body.strContrasena, 10) : undefined };
      const bodyUsuario = new UsuarioModel(body);
      const encontrarEmailUsuario = await UsuarioModel.findOne({ strEmail: body.strEmail });
      const encontrarNombreUsuario = await UsuarioModel.findOne({ strNombreUsuario: body.strNombreUsuario })
+    
+     // console.log(req.files,'tiene archivo');
+      const subio = await  cargaArchivo.subirArchivo(req.files.strImagen,'usuario',['image/png','image/jpg'])
+    //  console.log(subio); 
      if (encontrarEmailUsuario) {
          return res.status(400).json({
              ok: false,
@@ -360,15 +370,38 @@ app.post('/', async (req, res) =>{
              }
          })
      }
-     const usuarioRegistrado = await bodyUsuario.save();
-     return res.status(200).json({
-         ok: true,
-         msg: 'Se registro el usuario de manera exitosa',
-         cont: {
+     if(req.files){
+        if(req.files.strImagen){
+            return res.status(400).json({
+              ok: false,
+              msg: 'No se recibio un archivo strImagen. favor enviarlo',
+              cont: {
+              
+                    }
+            })
+        }
+        bodyUsuario.strImagen = await cargaArchivo.subirArchivo(req.files.strImagen,'usuario',['image/png','image/jpg','image/jpeg'])
+      }
+        const usuarioRegistrado = await bodyUsuario.save();
+        return res.status(200).json({
+            ok: true,
+            msg: 'Se registro el usuario de manera exitosa',
+            cont: {
              usuarioRegistrado
-         }
-     })
- })
+            }
+        })
+     } catch (error) {
+        return res.status(500).json({
+           ok: false,
+          msg: 'Uno o mas campos no se registrarón favor de ingresarlos',
+          cont: {
+            err
+          }
+        })       
+     }
+
+
+    })
  
 
 

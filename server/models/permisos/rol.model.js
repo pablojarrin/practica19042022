@@ -6,6 +6,10 @@ let schemaRol = new mongoose.Schema({
         type: String,
         required:['No se recibio el strNombre favor de ingresrlo']
     },
+    blnEstado:{
+        type:Boolean,
+        default:false
+    },
     strDescripcion:{
         type: String,
         required:['No se recibio el strDescripcion favor de ingresrlo']
@@ -14,7 +18,7 @@ let schemaRol = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    arrObjIdApis: []
+    arrObjIdApis: [mongoose]
 
 
 })

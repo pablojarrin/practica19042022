@@ -1,6 +1,7 @@
 const { json, query } = require('express');
 const express = require('express');
 const app = express.Router();
+const {verificaAcceso} = require('../../middlewares/permisos');
 const ProductoModel = require('../../models/producto/producto.model');
 
 // app.get('/',(req,res)=>{
@@ -134,7 +135,7 @@ const ProductoModel = require('../../models/producto/producto.model');
 //     }
 // })
 
-app.get('/', async (req, res) => {
+app.get('/', verificaAcceso,async (req, res) => {
     try {
         const blnEstado = req.query.blnEstado == "false" ? false : true;
         const obtenerProductos = await ProductoModel.find({blnEstado:blnEstado});
@@ -178,7 +179,7 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.post('/', async (req, res) => {
+app.post('/', verificaAcceso,async (req, res) => {
     try {
         const body = req.body;
         const productoBody = new ProductoModel(body)
@@ -224,7 +225,7 @@ app.post('/', async (req, res) => {
    // const productoRegistrado = await productoBody.save();  
 })
 
-app.put('/', async (req, res) => {
+app.put('/', verificaAcceso, async (req, res) => {
     try {
         const _idProducto = req.query._idProducto;
         if(!_idProducto || _idProducto.length !=24){
@@ -291,7 +292,7 @@ app.put('/', async (req, res) => {
 
 })
 
-app.delete('/', async (req, res)=>{
+app.delete('/', verificaAcceso,async (req, res)=>{
 try {
     const _idProducto = req.query._idProducto;
     if(!_idProducto || _idProducto.length != 24){
