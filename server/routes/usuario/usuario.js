@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const {verificarAcceso} = require('../../middlewares/permisos');
 const usuarioModel = require('../../models/usuario/usuario.model');
 const cargaArchivo = require('../../library/cargarArchivos');
-
+const RolModel = require('../../models/permisos/rol.model');
 
 
 // const path = require('path');
@@ -381,6 +381,10 @@ app.post('/', verificaAcceso, async (req, res) =>{
             })
         }
         bodyUsuario.strImagen = await cargaArchivo.subirArchivo(req.files.strImagen,'usuario',['image/png','image/jpg','image/jpeg'])
+      }
+      if(!req.body._idObjRol){
+        const encontroRolDefault = await RolModel.findOne({blnRolDefault:true})
+       bodyUsuario._idObjRol = encontroRolDefault._id;
       }
         const usuarioRegistrado = await bodyUsuario.save();
         return res.status(200).json({
