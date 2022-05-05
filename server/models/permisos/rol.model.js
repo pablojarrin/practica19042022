@@ -1,28 +1,23 @@
 const mongoose = require('mongoose');
 
 let schemaRol = new mongoose.Schema({
-
-    strNombre:{
+    blnEstado: {
+        type: Boolean,
+        default: true
+    },
+    strNombre: {
         type: String,
-        required:['No se recibio el strNombre favor de ingresrlo']
+        required: [true, 'No se recibio el strNombre, favor de ingresarlo']
     },
-    blnEstado:{
-        type:Boolean,
-        default:false
-    },
-    strDescripcion:{
+    strDescripcion: {
         type: String,
-        required:['No se recibio el strDescripcion favor de ingresrlo']
+        required: [true, 'No se recibio el strDescripcion, favor de ingresarlo']
     },
-    blnRolDefault:{
-        type:Boolean,
-        default:false
+    blnRolDefault: {
+        type: Boolean,
+        default: false
     },
-    arrObjIdApis: [mongoose]
-
-
+    arrObjIdApis: [mongoose.Types.ObjectId]
 })
 
-
 module.exports = mongoose.model('rol', schemaRol);
-

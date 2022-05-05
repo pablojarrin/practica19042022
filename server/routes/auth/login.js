@@ -41,14 +41,14 @@ app.post('/login',async (req,res)=> {
          if(!compararContrasena){
            return res.status(400).json({
                ok:false,
-               msg:'El contrasena o la contrasena son incorrectas , verificarlas',
+               msg:'El correo o la contrasena son incorrectas , verificarlas',
                cont:{
                  strEmail,
                  strContrasena
               }  
            })
          }
-         const token = jwt.sign({encontroEmail},process.env.SEED,{expiresIn: process.env.CADUCIDAD_TOKEN})
+         const token = jwt.sign({usuario:encontroEmail},process.env.SEED,{expiresIn: process.env.CADUCIDAD_TOKEN})
          return res.status(200).json({
              ok:true,
              msg: 'Se loguo el usuario de manera exitosa',

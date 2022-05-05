@@ -28,4 +28,4 @@ let SchemaEmpresa = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model(`producto`, SchemaProducto);
+module.exports = mongoose.model(`empresa`, SchemaEmpresa);

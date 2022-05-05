@@ -135,47 +135,47 @@ const ProductoModel = require('../../models/producto/producto.model');
 //     }
 // })
 
-app.get('/', verificaAcceso,async (req, res) => {
+app.get('/', verificarAcceso, async (req, res) => {
     try {
         const blnEstado = req.query.blnEstado == "false" ? false : true;
-        const obtenerProductos = await ProductoModel.find({blnEstado:blnEstado});
-       
+        const obtenerProductos = await ProductoModel.find({ blnEstado: blnEstado });
+
         //funcion con aggregate
+
         const obtenerProductosConAggregate = await ProductoModel.aggregate([
-           // {$project:{strNombre: 1 ,strPrecio: 1}},
-           // { $match:{$expr:{ $eq:["blnEstado", blnEstado]}}},
-           { $match: { blnEstado: blnEstado } },
+            { $match: { blnEstado: blnEstado } },
         ]);
-    
-        // fin funcion aggregate
-       if(obtenerProductos.length ==0){
-         
-        return res.status(400).json({
-            ok: false,
-            msg: 'No se encontrarón productos en la base de datos',
+
+        //funcion con aggregate
+
+        if (obtenerProductos.length == 0) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'No se encontrarón productos en la base de datos',
+                cont: {
+                    obtenerProductos,
+                }
+            })
+        }
+        return res.status(200).json({
+            ok: true,
+            msg: 'Se obtuvierón los productos de manera exitosa',
+            count: obtenerProductos.length,
             cont: {
-                obtenerProductos,
-              
+                obtenerProductosConAggregate
             }
         })
-       } return res.status(200).json({
-           ok:true,
-           msg:'Se obtuvieron los productos de manera exitosa',
-           count: obtenerProductos.length,
-           cont:{
-              // obtenerProductos,
-               obtenerProductosConAggregate
-           }
-       })     
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            ok: false,
-            msg: 'Error en el servidor',
-            cont: {
-                error
-            }
-        })
+        const err = Error(error);
+        return res.status(500).json(
+            {
+                ok: false,
+                msg: 'Error en el servidor',
+                cont:
+                {
+                    err: err.message ? err.message : err.name ? err.name : err
+                }
+            })
     }
 })
 
