@@ -21,12 +21,12 @@ app.use((req, res, next) => {
 
 app.use('/api', require('./routes/index'));
 //console.log(process.env.URLDB, 'URLDB')
-mongoose.connect(process.env.URLDB, (err, resp) => {
+mongoose.connect("mongodb+srv://PablitoJarrin:Fenix1973pjt@cluster0.llmav.mongodb.net/Proyecto?retryWrites=true&w=majority", (err, resp) => {
     if(err){
         console.log('Error al conectar a la base de datos'.red)
         return err
     }
-    console.log(`Base de dtos ONLINE`, (process.env.URLDB).blue)
+    console.log(`Base de dtos ONLINE`, ("mongodb+srv://PablitoJarrin:Fenix1973pjt@cluster0.llmav.mongodb.net/Proyecto?retryWrites=true&w=majority").blue)
 })
 app.listen(process.env.PORT, () => {
     console.log('[NODE]'.green, ' esta corriendo en el puerto:', (process.env.PORT).yellow);
